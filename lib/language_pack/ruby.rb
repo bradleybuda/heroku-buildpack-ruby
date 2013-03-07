@@ -75,6 +75,7 @@ class LanguagePack::Ruby < LanguagePack::Base
     setup_profiled
     allow_git do
       install_language_pack_gems
+      trust_certificates
       build_bundler
       create_database_yml
       install_binaries
@@ -364,6 +365,17 @@ ERROR
       puts  "and add it to your .gitignore. To vendor your gems with Bundler, use"
       puts  "`bundle pack` instead."
       FileUtils.rm_rf("vendor/bundle")
+    end
+  end
+
+  def trust_certificates
+    log("certs") do
+      certs_splat = 'certs/*.pem'
+      topic "Installing certificates from #{certs_splat}"
+      bundled_certs = Dir[certs_splat]
+      bundled_certs.each do |cert_path|
+        pipe("gem cert --add #{cert_path}")
+      end
     end
   end
 
