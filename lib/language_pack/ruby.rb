@@ -634,6 +634,9 @@ params = CGI.parse(uri.query || "")
       puts "Old: #{File.read(ruby_version_cache).chomp}"
       puts "New: #{full_ruby_version}"
       purge_bundler_cache
+    elsif ENV['PURGE_BUNDLER_CACHE'] == 'true'
+      puts "Reinstalling all gems because PURGE_BUNDLER_CACHE is set to true. You probably don't want to do this on every deployment."
+      purge_bundler_cache
     end
 
     FileUtils.mkdir_p(heroku_metadata)
